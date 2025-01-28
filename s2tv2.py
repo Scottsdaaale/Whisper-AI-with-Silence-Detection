@@ -28,7 +28,7 @@ def transcribe_audio(file_path, model_name="base"):
     chunks = detect_chunks(audio)
     print(f"Detected {len(chunks)} non-silent chunks")
     
-    full_transcription = ""
+    full_transcription = []
     
     for i, chunk in enumerate(chunks):
         # Export chunk to a temporary file
@@ -40,14 +40,14 @@ def transcribe_audio(file_path, model_name="base"):
         chunk_text = result["text"]
         
         print(f"{i+1}. {chunk_text}")
-        full_transcription += chunk_text + " "
+        full_transcription.append(f"{i+1}. {chunk_text}")
         
         # Remove temporary file
         os.remove(chunk_path)
     
     detected_language = result["language"]  # Using the language from the last chunk
     
-    return full_transcription.strip(), detected_language
+    return full_transcription, detected_language
 
 def format_elapsed_time(seconds):
     """Format elapsed time into hours, minutes, and seconds."""
@@ -59,7 +59,7 @@ def format_elapsed_time(seconds):
 def main():
     start_time = time.time()  # Start timer for the entire script
     
-    audio_file = "./mp3s/Anger Management.mp3"
+    audio_file = "./mp3s/AUDIO FILE NAME HERE).mp3"
     
     if not os.path.exists(audio_file):
         print(f"Error: The file {audio_file} does not exist.")
@@ -71,7 +71,7 @@ def main():
     
     with open("transcription.txt", "w", encoding="utf-8") as f:
         f.write(f"Detected language: {language}\n\n")
-        f.write(transcription)
+        f.write("\n".join(transcription))
     
     print("\nTranscription saved to transcription.txt")
     
